@@ -6,6 +6,8 @@ export default (state = null, action) => {
             return action.events
         case EVENT_CREATE_SUCCESS:
             return [...state, action.event]
+        case EVENT_CREATE_SUCCESS:
+            return [...state, action.event]
         default:
             return state
     }

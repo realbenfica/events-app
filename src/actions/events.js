@@ -2,6 +2,7 @@ import request from 'superagent'
 
 export const EVENTS_FETCHED = 'EVENTS_FETCHED'
 export const EVENT_CREATE_SUCCESS = 'EVENT_CREATE_SUCCESS'
+export const EVENT_FETCHED = 'EVENT_FETCHED'
 
 const baseUrl = 'http://localhost:4000'
 
@@ -37,3 +38,22 @@ export const createEvent = (data) => dispatch => {
     })
     .catch(console.error)
 }
+
+const eventLoadEvent = event => ({
+  type: EVENT_FETCHED,
+  event
+})
+
+export const loadEvent = () => dispatch => {
+  request
+    .get(`${baseUrl}/events/{id}`)
+    .then(response => {
+      dispatch(eventLoadEvent(response.body))
+    })
+    .catch(console.error)
+}
+
+
+
+// Add the loadEvent action creator that does an GET /events/{id} request. 
+// When a response comes back, it should create an action with type EVENT_FETCHED.
