@@ -3,6 +3,7 @@ import request from 'superagent'
 export const EVENTS_FETCHED = 'EVENTS_FETCHED'
 export const EVENT_CREATE_SUCCESS = 'EVENT_CREATE_SUCCESS'
 export const EVENT_FETCHED = 'EVENT_FETCHED'
+export const EVENT_DELETE_SUCCESS = 'EVENT_DELETE_SUCCESS'
 
 const baseUrl = 'http://localhost:4000'
 
@@ -39,21 +40,48 @@ export const createEvent = (data) => dispatch => {
     .catch(console.error)
 }
 
-const eventLoadEvent = event => ({
+const eventFetched = event => ({
   type: EVENT_FETCHED,
   event
 })
 
-export const loadEvent = () => dispatch => {
-  request
-    .get(`${baseUrl}/events/{id}`)
-    .then(response => {
-      dispatch(eventLoadEvent(response.body))
-    })
-    .catch(console.error)
+
+export const loadEvent = (id) => (dispatch, getState) => {
+  // when the state already contains event, we don't fetch them again
+  const state = getState().event
+  if (state && state.id === id) return
+
+  // a GET /event request
+  request(`${baseUrl}/events/${id}`)
+      .then(response => {
+          // dispatch an EVENT_FETCHED action that contains the events
+          dispatch(eventFetched(response.body))
+      })
+      .catch(console.error)
 }
 
 
 
-// Add the loadEvent action creator that does an GET /events/{id} request. 
-// When a response comes back, it should create an action with type EVENT_FETCHED.
+
+
+
+
+const deleteSuccess = event => ({
+  type: EVENT_DELETE_SUCCESS,
+  event
+})
+
+
+export const deleteEvent = (id) => (dispatch, getState) => {
+  // when the state already contains event, we don't fetch them again
+  const state = getState().event
+  if (state && state.id === id) return
+
+  // a GET /event request
+  request(`${baseUrl}/events/${id}`)
+      .then(response => {
+          // dispatch an EVENT_FETCHED action that contains the events
+          dispatch(deleteSuccess(response.body))
+      })
+      .catch(console.error)
+}
